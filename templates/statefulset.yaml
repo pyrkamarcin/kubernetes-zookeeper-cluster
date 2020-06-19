@@ -5,7 +5,7 @@ metadata:
   name: zk
 spec:
   serviceName: zk-hs
-  replicas: {{.servers}}
+  replicas: {{.Values.servers}}
   podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
@@ -14,28 +14,28 @@ spec:
       labels:
         app: zk
     spec:
-      {{- if .affinity_key }}
-      {{- if .affinity_selector }}
+      {{- if .Values.affinity_key }}
+      {{- if .Values.affinity_selector }}
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             preference:
               matchExpressions:
-              - key: {{.affinity_key}}
+              - key: {{.Values.affinity_key}}
                 operator: In
                 values:
-                - {{.affinity_selector}}
+                - {{.Values.affinity_selector}}
       {{- end }}
       {{- end }}
       containers:
       - name: kubernetes-zookeeper
         imagePullPolicy: Always
-        image: {{.image}}
+        image: {{.Values.image}}
         resources:
           requests:
-            memory: {{.memoryrequest}}
-            cpu: {{.cpurequest}}
+            memory: {{.Values.memoryrequest}}
+            cpu: {{.Values.cpurequest}}
         ports:
         - containerPort: 2181
           name: client
@@ -47,7 +47,7 @@ spec:
         - sh
         - -c
         - "start-zookeeper \
-          --servers={{.servers}} \
+          --servers={{.Values.servers}} \
           --data_dir=/var/lib/zookeeper/data \
           --data_log_dir=/var/lib/zookeeper/data/log \
           --conf_dir=/opt/zookeeper/conf \
@@ -57,7 +57,7 @@ spec:
           --tick_time=2000 \
           --init_limit=10 \
           --sync_limit=5 \
-          --heap={{.heapsize}} \
+          --heap={{.Values.heapsize}} \
           --max_client_cnxns=60 \
           --snap_retain_count=3 \
           --purge_interval=12 \
@@ -93,4 +93,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{.storagesize}}
+          storage: {{.Values.storagesize}}
