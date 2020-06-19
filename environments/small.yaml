@@ -3,4 +3,4 @@ memoryrequest: "500m"
 cpurequest: "0.5"
 servers: 3
 heapsize: 256M
-storagesize: 10Gi
+storagesize: 1Gi
